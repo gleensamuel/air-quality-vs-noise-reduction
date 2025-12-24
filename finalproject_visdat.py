@@ -14,75 +14,9 @@ st.set_page_config(
     page_icon="🌱",
     layout="wide"
 )
-# ======================
-# CUSTOM CSS
-# ======================
-st.markdown("""
-<style>
-.section-box {
-    background-color: #ffffff;
-    padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
-    margin-bottom: 35px;
-}
-
-.section-title {
-    font-size: 30px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 12px;
-}
-
-.section-text {
-    font-size: 16px;
-    line-height: 1.75;
-    color: #334155;
-}
-
-.card {
-    background-color: #ffffff;
-    padding: 22px;
-    border-radius: 14px;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.05);
-    height: 100%;
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.card-desc {
-    font-size: 14px;
-    color: #64748b;
-}
-</style>
-""", unsafe_allow_html=True)
 
 st.title("🌱 Cleaner Air, Quieter Cities")
 st.caption("Interactive Environmental Co-Benefit Dashboard (2025–2050)")
-st.markdown("""
-<div class="section-box">
-    <div class="section-title">Background & Objectives</div>
-    <div class="section-text">
-        Connecting technical environmental data with the everyday experiences of city residents.<br><br>
-
-        Cities with heavy traffic face two closely related environmental challenges: 
-        declining air quality and increasing road noise. 
-        Transportation and traffic management policies aimed at reducing emissions often produce multiple benefits,
-        including improved acoustic comfort in residential areas.
-
-        This dashboard visualizes projected air quality and noise indicators across
-        multiple urban areas from 2025 to 2050. The main objective is to highlight
-        <b>environmental co-benefits</b>, where a single policy intervention leads to
-        simultaneous improvements in both air quality and noise reduction.<br><br>
-
-        Through interactive charts and spatial exploration, users can uncover temporal
-        trends, regional disparities, and priority areas that benefit most from
-        sustainable urban policies.
-""", unsafe_allow_html=True)
 
 # ======================
 # LOAD DATA
@@ -124,46 +58,6 @@ selected_type = st.sidebar.radio(
     "Jenis Co-Benefit",
     ['air_quality', 'noise']
 )
-st.markdown("## 🏙️ Everyday Problems in the City")
-st.markdown("_Life in the City: Stuffy Air and Loud Noises_")
-st.write("")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("""
-    <div class="card">
-        <div class="card-title">🚗 Vehicle Exhaust</div>
-        <div class="card-desc">
-            The primary source of urban air pollution, especially in areas
-            with high traffic density and fossil-fuel-based transportation.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="card">
-        <div class="card-title">📢 Road Noise</div>
-        <div class="card-desc">
-            Continuous exposure to traffic noise from engines and horns
-            reduces acoustic comfort and impacts mental well-being.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="card">
-        <div class="card-title">🌫️ Stuffy Air</div>
-        <div class="card-desc">
-            Pollutants trapped in narrow road corridors create unhealthy
-            breathing conditions for nearby residents.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.divider()
 
 # ======================
 # KPI METRICS
@@ -178,9 +72,38 @@ col2.metric("🔇 Total Noise Reduction", f"{noise_total:,.0f}")
 st.divider()
 
 # ======================
+# TREND LINE
+# ======================
+st.subheader("📈 Tren Co-Benefit Tahunan")
+
+air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
+noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
+
+df_years = pd.DataFrame({
+    "Year": [int(y) for y in tahun_cols],
+    "Air Quality Improvement": air_year.values,
+    "Noise Reduction": noise_year.values
+})
+
+fig_line = px.line(
+    df_years,
+    x="Year",
+    y=["Air Quality Improvement", "Noise Reduction"],
+    markers=True
+)
+
+st.plotly_chart(fig_line, use_container_width=True)
+
+st.info(
+    "📌 **Interpretasi:** Grafik ini menunjukkan bahwa peningkatan kualitas udara "
+    "dan pengurangan kebisingan memiliki tren naik yang konsisten dari tahun ke tahun, "
+    "menandakan adanya *co-benefit lingkungan jangka panjang*."
+)
+
+# ======================
 # TOP 5 AIR QUALITY
 # ======================
-st.subheader("🌬️ Top 5 Regions with the Best Air Quality Improvement")
+st.subheader("🌬️ Top 5 Wilayah dengan Air Quality Improvement Terbaik")
 
 air_top5 = (
     df[df['co-benefit_type'] == 'air_quality']
@@ -197,7 +120,7 @@ fig_air_top5 = px.bar(
     x='small_area',
     y='Total Air Quality',
     text='Total Air Quality',
-    title="Top 5 Regions – Air Quality Improvement (2025–2050)",
+    title="Top 5 Wilayah – Air Quality Improvement (2025–2050)",
 )
 
 fig_air_top5.update_traces(textposition='outside')
@@ -206,9 +129,9 @@ fig_air_top5.update_layout(yaxis_title="Total Air Quality Improvement")
 st.plotly_chart(fig_air_top5, use_container_width=True)
 
 st.info(
-    "🌬️ **Summary:** These regions showed the highest air quality improvement"
-    "during the 2025–2050 period. This indicates the effectiveness of emission control"
-    "policies and the potential for a healthier environment."
+    "🌬️ **Penjelasan:** Wilayah-wilayah ini menunjukkan peningkatan kualitas udara "
+    "tertinggi selama periode 2025–2050. Hal ini mengindikasikan efektivitas kebijakan "
+    "pengendalian emisi dan potensi lingkungan hidup yang lebih sehat."
 )
 
 # ======================
@@ -352,34 +275,6 @@ st.pyplot(fig)
 st.info(
     "🔥 **Interpretasi:** Nilai korelasi yang tinggi menunjukkan bahwa "
     "peningkatan kualitas udara dan penurunan kebisingan berkembang secara konsisten."
-)
-# ======================
-# TREND LINE
-# ======================
-st.subheader("📈 Tren Co-Benefit Tahunan")
-
-air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
-noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
-
-df_years = pd.DataFrame({
-    "Year": [int(y) for y in tahun_cols],
-    "Air Quality Improvement": air_year.values,
-    "Noise Reduction": noise_year.values
-})
-
-fig_line = px.line(
-    df_years,
-    x="Year",
-    y=["Air Quality Improvement", "Noise Reduction"],
-    markers=True
-)
-
-st.plotly_chart(fig_line, use_container_width=True)
-
-st.info(
-    "📌 **Interpretasi:** Grafik ini menunjukkan bahwa peningkatan kualitas udara "
-    "dan pengurangan kebisingan memiliki tren naik yang konsisten dari tahun ke tahun, "
-    "menandakan adanya *co-benefit lingkungan jangka panjang*."
 )
 
 # ======================
