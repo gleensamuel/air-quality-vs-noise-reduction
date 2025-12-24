@@ -315,7 +315,7 @@ fig_map = px.scatter_mapbox(
 st.plotly_chart(fig_map, use_container_width=True)
 
 st.warning(
-    "🗺️ **Notes:** The location is simulated.
+    "🗺️ **Notes:** The location is simulated."
 
 "If regional coordinate data is available, the map can be enhanced to an accurate geomap."
 )
