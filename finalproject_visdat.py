@@ -101,6 +101,75 @@ st.info(
 )
 
 # ======================
+# TOP 5 AIR QUALITY
+# ======================
+st.subheader("🌬️ Top 5 Wilayah dengan Air Quality Improvement Terbaik")
+
+air_top5 = (
+    df[df['co-benefit_type'] == 'air_quality']
+    .groupby('small_area')[tahun_cols]
+    .sum()
+    .sum(axis=1)
+    .reset_index(name='Total Air Quality')
+    .sort_values('Total Air Quality', ascending=False)
+    .head(5)
+)
+
+fig_air_top5 = px.bar(
+    air_top5,
+    x='small_area',
+    y='Total Air Quality',
+    text='Total Air Quality',
+    title="Top 5 Wilayah – Air Quality Improvement (2025–2050)",
+)
+
+fig_air_top5.update_traces(textposition='outside')
+fig_air_top5.update_layout(yaxis_title="Total Air Quality Improvement")
+
+st.plotly_chart(fig_air_top5, use_container_width=True)
+
+st.info(
+    "🌬️ **Penjelasan:** Wilayah-wilayah ini menunjukkan peningkatan kualitas udara "
+    "tertinggi selama periode 2025–2050. Hal ini mengindikasikan efektivitas kebijakan "
+    "pengendalian emisi dan potensi lingkungan hidup yang lebih sehat."
+)
+
+# ======================
+# TOP 5 NOISE REDUCTION
+# ======================
+st.subheader("🔇 Top 5 Wilayah dengan Noise Reduction Terbaik")
+
+noise_top5 = (
+    df[df['co-benefit_type'] == 'noise']
+    .groupby('small_area')[tahun_cols]
+    .sum()
+    .sum(axis=1)
+    .reset_index(name='Total Noise Reduction')
+    .sort_values('Total Noise Reduction', ascending=False)
+    .head(5)
+)
+
+fig_noise_top5 = px.bar(
+    noise_top5,
+    x='small_area',
+    y='Total Noise Reduction',
+    text='Total Noise Reduction',
+    title="Top 5 Wilayah – Noise Reduction (2025–2050)",
+    color='Total Noise Reduction'
+)
+
+fig_noise_top5.update_traces(textposition='outside')
+fig_noise_top5.update_layout(yaxis_title="Total Noise Reduction")
+
+st.plotly_chart(fig_noise_top5, use_container_width=True)
+
+st.info(
+    "🔇 **Penjelasan:** Wilayah dengan tingkat pengurangan kebisingan tertinggi "
+    "menunjukkan keberhasilan pengelolaan transportasi, tata kota, dan pembatasan "
+    "aktivitas bising di area permukiman."
+)
+
+# ======================
 # SCATTER COMFORT ZONE
 # ======================
 st.subheader("🎯 Comfort Zone Analysis")
