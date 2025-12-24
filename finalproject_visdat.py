@@ -72,7 +72,7 @@ st.markdown("""
         Cities with heavy traffic face two closely related environmental challenges:
         declining air quality and increasing road noise. Transportation and traffic
         management policies aimed at reducing emissions often produce multiple benefits,
-        including improved acoustic comfort in residential areas.<br><br>
+        including improved acoustic comfort in residential areas.
 
         This dashboard visualizes projected air quality and noise indicators across
         multiple urban areas from 2025 to 2050. The main objective is to highlight
@@ -82,8 +82,6 @@ st.markdown("""
         Through interactive charts and spatial exploration, users can uncover temporal
         trends, regional disparities, and priority areas that benefit most from
         sustainable urban policies.
-    </div>
-</div>
 """, unsafe_allow_html=True)
 
 # ======================
