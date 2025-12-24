@@ -72,35 +72,6 @@ col2.metric("🔇 Total Noise Reduction", f"{noise_total:,.0f}")
 st.divider()
 
 # ======================
-# TREND LINE
-# ======================
-st.subheader("📈 Tren Co-Benefit Tahunan")
-
-air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
-noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
-
-df_years = pd.DataFrame({
-    "Year": [int(y) for y in tahun_cols],
-    "Air Quality Improvement": air_year.values,
-    "Noise Reduction": noise_year.values
-})
-
-fig_line = px.line(
-    df_years,
-    x="Year",
-    y=["Air Quality Improvement", "Noise Reduction"],
-    markers=True
-)
-
-st.plotly_chart(fig_line, use_container_width=True)
-
-st.info(
-    "📌 **Interpretasi:** Grafik ini menunjukkan bahwa peningkatan kualitas udara "
-    "dan pengurangan kebisingan memiliki tren naik yang konsisten dari tahun ke tahun, "
-    "menandakan adanya *co-benefit lingkungan jangka panjang*."
-)
-
-# ======================
 # TOP 5 AIR QUALITY
 # ======================
 st.subheader("🌬️ Top 5 Wilayah dengan Air Quality Improvement Terbaik")
@@ -170,36 +141,18 @@ st.info(
 )
 
 # ======================
-# SCATTER COMFORT ZONE
+# CORRELATION HEATMAP
 # ======================
-st.subheader("🎯 Comfort Zone Analysis")
+st.subheader("🔥 Heatmap Korelasi")
 
-x_mean = df_years["Air Quality Improvement"].mean()
-y_mean = df_years["Noise Reduction"].mean()
+corr = df[tahun_cols].corr()
+fig, ax = plt.subplots(figsize=(14,6))
+sns.heatmap(corr, cmap="coolwarm", ax=ax)
+st.pyplot(fig)
 
-df_years["Comfort Zone"] = np.where(
-    (df_years["Air Quality Improvement"] > x_mean) &
-    (df_years["Noise Reduction"] < y_mean),
-    "Most Comfortable",
-    "Other"
-)
-
-fig_scatter = px.scatter(
-    df_years,
-    x="Air Quality Improvement",
-    y="Noise Reduction",
-    color="Comfort Zone",
-    hover_data=["Year"],
-)
-
-fig_scatter.add_vline(x=x_mean, line_dash="dash")
-fig_scatter.add_hline(y=y_mean, line_dash="dash")
-
-st.plotly_chart(fig_scatter, use_container_width=True)
-
-st.success(
-    "🎯 **Makna Kebijakan:** Area di kuadran kanan-bawah merepresentasikan "
-    "kondisi paling nyaman bagi masyarakat—udara bersih dengan tingkat kebisingan rendah."
+st.info(
+    "🔥 **Interpretasi:** Nilai korelasi yang tinggi menunjukkan bahwa "
+    "peningkatan kualitas udara dan penurunan kebisingan berkembang secara konsisten."
 )
 
 # ======================
@@ -263,18 +216,65 @@ st.warning(
 )
 
 # ======================
-# CORRELATION HEATMAP
+# TREND LINE
 # ======================
-st.subheader("🔥 Heatmap Korelasi")
+st.subheader("📈 Tren Co-Benefit Tahunan")
 
-corr = df[tahun_cols].corr()
-fig, ax = plt.subplots(figsize=(14,6))
-sns.heatmap(corr, cmap="coolwarm", ax=ax)
-st.pyplot(fig)
+air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
+noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
+
+df_years = pd.DataFrame({
+    "Year": [int(y) for y in tahun_cols],
+    "Air Quality Improvement": air_year.values,
+    "Noise Reduction": noise_year.values
+})
+
+fig_line = px.line(
+    df_years,
+    x="Year",
+    y=["Air Quality Improvement", "Noise Reduction"],
+    markers=True
+)
+
+st.plotly_chart(fig_line, use_container_width=True)
 
 st.info(
-    "🔥 **Interpretasi:** Nilai korelasi yang tinggi menunjukkan bahwa "
-    "peningkatan kualitas udara dan penurunan kebisingan berkembang secara konsisten."
+    "📌 **Interpretasi:** Grafik ini menunjukkan bahwa peningkatan kualitas udara "
+    "dan pengurangan kebisingan memiliki tren naik yang konsisten dari tahun ke tahun, "
+    "menandakan adanya *co-benefit lingkungan jangka panjang*."
+)
+
+# ======================
+# SCATTER COMFORT ZONE
+# ======================
+st.subheader("🎯 Comfort Zone Analysis")
+
+x_mean = df_years["Air Quality Improvement"].mean()
+y_mean = df_years["Noise Reduction"].mean()
+
+df_years["Comfort Zone"] = np.where(
+    (df_years["Air Quality Improvement"] > x_mean) &
+    (df_years["Noise Reduction"] < y_mean),
+    "Most Comfortable",
+    "Other"
+)
+
+fig_scatter = px.scatter(
+    df_years,
+    x="Air Quality Improvement",
+    y="Noise Reduction",
+    color="Comfort Zone",
+    hover_data=["Year"],
+)
+
+fig_scatter.add_vline(x=x_mean, line_dash="dash")
+fig_scatter.add_hline(y=y_mean, line_dash="dash")
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+st.success(
+    "🎯 **Makna Kebijakan:** Area di kuadran kanan-bawah merepresentasikan "
+    "kondisi paling nyaman bagi masyarakat—udara bersih dengan tingkat kebisingan rendah."
 )
 
 # ======================
