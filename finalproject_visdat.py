@@ -43,11 +43,6 @@ df[num_cols] = df[num_cols].fillna(df[num_cols].median())
 
 tahun_cols = [str(y) for y in range(2025, 2051)]
 
-st.info(
-    "📌 ***Background & Objectives Connecting technical data with the everyday stories of city residents*)* 
-    
-)
-
 # ======================
 # SIDEBAR
 # ======================
