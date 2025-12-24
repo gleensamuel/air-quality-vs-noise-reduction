@@ -181,7 +181,7 @@ st.divider()
 # ======================
 # TOP 5 AIR QUALITY
 # ======================
-st.subheader("🌬️ Top 5 Wilayah dengan Air Quality Improvement Terbaik")
+st.subheader("🌬️ Top 5 Regions with the Best Air Quality Improvement")
 
 air_top5 = (
     df[df['co-benefit_type'] == 'air_quality']
@@ -198,7 +198,7 @@ fig_air_top5 = px.bar(
     x='small_area',
     y='Total Air Quality',
     text='Total Air Quality',
-    title="Top 5 Wilayah – Air Quality Improvement (2025–2050)",
+    title="Top 5 Reqions – Air Quality Improvement (2025–2050)",
 )
 
 fig_air_top5.update_traces(textposition='outside')
@@ -207,9 +207,9 @@ fig_air_top5.update_layout(yaxis_title="Total Air Quality Improvement")
 st.plotly_chart(fig_air_top5, use_container_width=True)
 
 st.info(
-    "🌬️ **Penjelasan:** Wilayah-wilayah ini menunjukkan peningkatan kualitas udara "
-    "tertinggi selama periode 2025–2050. Hal ini mengindikasikan efektivitas kebijakan "
-    "pengendalian emisi dan potensi lingkungan hidup yang lebih sehat."
+    "🌬️ **Summary:** These regions showed the highest air quality improvement during the 2025–2050 period. "
+    "This indicates the effectiveness of emission control policies  "
+    "and the potential for a healthier environment."
 )
 
 # ======================
