@@ -44,7 +44,7 @@ df[num_cols] = df[num_cols].fillna(df[num_cols].median())
 tahun_cols = [str(y) for y in range(2025, 2051)]
 
 st.info(
-    "📌 ***Background & Objectives Connecting technical data with the everyday stories of city residents*** 
+    "📌 **Background & Objectives Connecting technical data with the everyday stories of city residents** 
     Cities with heavy traffic face two interrelated environmental problems: declining air quality and high road noise. Various low-emission transportation and traffic management policies not only target air pollution reduction, but also have the potential to reduce noise levels in residential areas.
 
 This visualization uses data on air quality and noise indicators measured for each small area and several years of projections. The goal is to show how a single intervention can yield two benefits at once (“co-benefits”), as well as to help readers see spatial and temporal patterns that are not immediately apparent from tables of raw numbers.
