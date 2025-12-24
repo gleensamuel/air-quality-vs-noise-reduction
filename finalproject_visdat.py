@@ -69,9 +69,7 @@ st.markdown("""
     <div class="section-text">
         Connecting technical environmental data with the everyday experiences of city residents.<br><br>
 
-        Cities with heavy traffic face two closely related environmental challenges:
-        declining air quality and increasing road noise. Transportation and traffic
-        management policies aimed at reducing emissions often produce multiple benefits,
+        Cities with heavy traffic face two closely related environmental challenges: declining air quality and increasing road noise. Transportation and traffic management policies aimed at reducing emissions often produce multiple benefits,
         including improved acoustic comfort in residential areas.
 
         This dashboard visualizes projected air quality and noise indicators across
