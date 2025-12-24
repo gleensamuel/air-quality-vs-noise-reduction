@@ -248,7 +248,7 @@ st.info(
 # ======================
 # CORRELATION HEATMAP
 # ======================
-st.subheader("🔥 Heatmap Korelasi")
+st.subheader("🔥 Heatmap Correlation")
 
 corr = df[tahun_cols].corr()
 fig, ax = plt.subplots(figsize=(14,6))
@@ -256,14 +256,14 @@ sns.heatmap(corr, cmap="coolwarm", ax=ax)
 st.pyplot(fig)
 
 st.info(
-    "🔥 **Interpretasi:** Nilai korelasi yang tinggi menunjukkan bahwa "
-    "peningkatan kualitas udara dan penurunan kebisingan berkembang secara konsisten."
+    "🔥 **Summary:** The high correlation value indicates that "
+"air quality improvements and noise reductions are developing consistently."
 )
 
 # ======================
 # TOP AREA BAR
 # ======================
-st.subheader("🏆 Top Wilayah dengan Co-Benefit Tertinggi")
+st.subheader("🏆 Top Regions with the Highest Co-Benefits")
 
 area_total = (
     df.groupby(['small_area', 'co-benefit_type'])[tahun_cols]
@@ -282,8 +282,7 @@ fig_bar = px.bar(
 st.plotly_chart(fig_bar, use_container_width=True)
 
 st.info(
-    "🏙️ **Insight Wilayah:** Grafik ini membantu mengidentifikasi wilayah prioritas "
-    "yang paling diuntungkan oleh kebijakan lingkungan."
+    "🏙️ **Insight:** This graph helps identify priority areas that will benefit most from environmental policies."
 )
 
 # ======================
@@ -316,14 +315,15 @@ fig_map = px.scatter_mapbox(
 st.plotly_chart(fig_map, use_container_width=True)
 
 st.warning(
-    "🗺️ **Catatan Peta:** Lokasi bersifat simulatif. "
-    "Jika tersedia data koordinat wilayah, peta dapat ditingkatkan menjadi geo-map akurat."
+    "🗺️ **Notes:** The location is simulated.
+
+"If regional coordinate data is available, the map can be enhanced to an accurate geomap."
 )
 
 # ======================
 # TREND LINE
 # ======================
-st.subheader("📈 Tren Co-Benefit Tahunan")
+st.subheader("📈 Annual Co-Benefit Trends")
 
 air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
 noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
@@ -344,9 +344,7 @@ fig_line = px.line(
 st.plotly_chart(fig_line, use_container_width=True)
 
 st.info(
-    "📌 **Interpretasi:** Grafik ini menunjukkan bahwa peningkatan kualitas udara "
-    "dan pengurangan kebisingan memiliki tren naik yang konsisten dari tahun ke tahun, "
-    "menandakan adanya *co-benefit lingkungan jangka panjang*."
+    "📌 **Interpretation:** This graph shows that improvements in air quality and noise reduction have a consistent upward trend year after year, indicating a long-term environmental co-benefit."
 )
 
 # ======================
@@ -378,12 +376,11 @@ fig_scatter.add_hline(y=y_mean, line_dash="dash")
 st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.success(
-    "🎯 **Makna Kebijakan:** Area di kuadran kanan-bawah merepresentasikan "
-    "kondisi paling nyaman bagi masyarakat—udara bersih dengan tingkat kebisingan rendah."
+    "🎯 **Summary:** The area in the lower-right quadrant represents the most comfortable conditions for people—clean air with low noise levels."
 )
 
 # ======================
 # FOOTER
 # ======================
 st.markdown("---")
-st.caption("📊 Data Visualization • Streamlit • Plotly • Environmental Analytics")
+st.caption("📊 Data Visualization • Environmental Analytics")
