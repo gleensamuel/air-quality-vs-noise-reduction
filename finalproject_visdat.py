@@ -76,7 +76,7 @@ st.markdown("""
 
         This dashboard visualizes projected air quality and noise indicators across
         multiple urban areas from 2025 to 2050. The main objective is to highlight
-        <b>environmental co-benefits</b>, where a single policy intervention leads to
+        environmental co-benefits, where a single policy intervention leads to
         simultaneous improvements in both air quality and noise reduction.
 
         Through interactive charts and spatial exploration, users can uncover temporal
@@ -182,6 +182,12 @@ st.divider()
 # TOP 5 AIR QUALITY
 # ======================
 st.subheader("🌬️ Top 5 Regions with the Best Air Quality Improvement")
+st.markdown("""
+### Where Emission Control Works Best
+Regions where emission control policies deliver the greatest air quality improvements,
+showcasing the long-term environmental benefits of cleaner transportation systems.
+""")
+
 
 air_top5 = (
     df[df['co-benefit_type'] == 'air_quality']
@@ -216,6 +222,10 @@ st.info(
 # TOP 5 NOISE REDUCTION
 # ======================
 st.subheader("🔇 Top 5 Regions with the Best Noise Reduction")
+st.markdown("""
+### Where Cities Become Quieter
+Here, we focus on regions that achieved the largest reduction in road noise.
+""")
 
 noise_top5 = (
     df[df['co-benefit_type'] == 'noise']
@@ -249,6 +259,11 @@ st.info(
 # CORRELATION HEATMAP
 # ======================
 st.subheader("🔥 Heatmap Correlation")
+st.markdown("""
+### Do Cleaner Air and Quieter Cities Move Together?
+This heatmap explores the relationship between improvements in air quality and reductions in road noise,
+revealing whether environmental benefits tend to occur simultaneously.
+""")
 
 corr = df[tahun_cols].corr()
 fig, ax = plt.subplots(figsize=(14,6))
@@ -264,6 +279,10 @@ st.info(
 # TOP AREA BAR
 # ======================
 st.subheader("🏆 Top Regions with the Highest Co-Benefits")
+st.markdown("""
+### Who Benefits the Most?
+This section combines both indicators to identify regions with the highest overall co-benefits.
+""")
 
 area_total = (
     df.groupby(['small_area', 'co-benefit_type'])[tahun_cols]
@@ -285,10 +304,140 @@ st.info(
     "🏙️ **Insight:** This graph helps identify priority areas that will benefit most from environmental policies."
 )
 
+
+# ======================
+# TREND LINE
+# ======================
+st.subheader("📈 Annual Co-Benefit Trends")
+st.markdown("""
+### Are Improvements Sustainable Over Time?
+This time-series chart illustrates how combined air quality and noise reduction benefits
+evolve year by year over the projected period.
+""")
+
+air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
+noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
+
+df_years = pd.DataFrame({
+    "Year": [int(y) for y in tahun_cols],
+    "Air Quality Improvement": air_year.values,
+    "Noise Reduction": noise_year.values
+})
+
+fig_line = px.line(
+    df_years,
+    x="Year",
+    y=["Air Quality Improvement", "Noise Reduction"],
+    markers=True
+)
+
+st.plotly_chart(fig_line, use_container_width=True)
+
+st.info(
+    "📌 **Interpretation:** This graph shows that improvements in air quality and noise reduction have a consistent upward trend year after year, indicating a long-term environmental co-benefit."
+)
+
+# ======================
+# BEFORE–AFTER COMPARISON
+# ======================
+st.subheader("⏳ Before–After Comparison (2025 vs 2050)")
+st.markdown("""
+### Measuring the Real Impact of Environmental Policies
+By comparing environmental conditions in 2025 and 2050,
+this section demonstrates the tangible outcomes of long-term environmental policies on urban air quality and noise levels.
+""")
+
+# --- Aggregate data ---
+air_2025 = df[df['co-benefit_type'] == 'air_quality']['2025'].sum()
+air_2050 = df[df['co-benefit_type'] == 'air_quality']['2050'].sum()
+
+noise_2025 = df[df['co-benefit_type'] == 'noise']['2025'].sum()
+noise_2050 = df[df['co-benefit_type'] == 'noise']['2050'].sum()
+
+before_after_df = pd.DataFrame({
+    "Indicator": ["Air Quality Improvement", "Air Quality Improvement",
+                  "Noise Reduction", "Noise Reduction"],
+    "Year": ["2025", "2050", "2025", "2050"],
+    "Total Value": [air_2025, air_2050, noise_2025, noise_2050]
+})
+
+# --- Grouped bar chart ---
+fig_before_after = px.bar(
+    before_after_df,
+    x="Indicator",
+    y="Total Value",
+    color="Year",
+    barmode="group",
+    text="Total Value",
+)
+
+fig_before_after.update_traces(texttemplate='%{text:,.0f}', textposition='outside')
+fig_before_after.update_layout(
+    yaxis_title="Total Improvement / Reduction",
+    xaxis_title="Environmental Indicator",
+    legend_title="Year"
+)
+
+st.plotly_chart(fig_before_after, use_container_width=True)
+
+st.success(
+    "📊 **Interpretation:** The clear increase from 2025 to 2050 demonstrates that "
+    "long-term environmental and transportation policies deliver substantial improvements "
+    "in both air quality and noise reduction."
+)
+
+
+
+
+
+
+# ======================
+# SCATTER COMFORT ZONE
+# ======================
+st.subheader("🎯 Comfort Zone Analysis")
+st.markdown("""
+### Where People Feel the Most Comfortable
+By mapping air quality improvements against noise levels,
+this quadrant analysis highlights regions that offer the most comfortable living conditions.
+""")
+
+x_mean = df_years["Air Quality Improvement"].mean()
+y_mean = df_years["Noise Reduction"].mean()
+
+df_years["Comfort Zone"] = np.where(
+    (df_years["Air Quality Improvement"] > x_mean) &
+    (df_years["Noise Reduction"] < y_mean),
+    "Most Comfortable",
+    "Other"
+)
+
+fig_scatter = px.scatter(
+    df_years,
+    x="Air Quality Improvement",
+    y="Noise Reduction",
+    color="Comfort Zone",
+    hover_data=["Year"],
+)
+
+fig_scatter.add_vline(x=x_mean, line_dash="dash")
+fig_scatter.add_hline(y=y_mean, line_dash="dash")
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+st.success(
+    "🎯 **Summary:** The area in the lower-right quadrant represents the most comfortable conditions for people—clean air with low noise levels."
+)
+
+
 # ======================
 # INTERACTIVE MAP (SIMULATED)
 # ======================
 st.subheader("🗺️ Interactive Area Map")
+st.markdown("""
+### Seeing the Benefits Spatially
+This interactive map enables users to explore how air quality improvements and noise reductions
+are distributed across regions.
+""")
 
 map_df = (
     df[df['co-benefit_type'] == selected_type]
@@ -320,64 +469,15 @@ st.warning(
 "If regional coordinate data is available, the map can be enhanced to an accurate geomap."
 )
 
-# ======================
-# TREND LINE
-# ======================
-st.subheader("📈 Annual Co-Benefit Trends")
 
-air_year = df[df['co-benefit_type'] == 'air_quality'][tahun_cols].sum()
-noise_year = df[df['co-benefit_type'] == 'noise'][tahun_cols].sum()
+st.markdown("""
+### Conclusion
+Cleaner air and quieter cities emerge together as co-benefits of integrated environmental
+and transportation policies. By examining air quality and noise reduction simultaneously,
+this dashboard underscores how long-term policy interventions can improve urban comfort,
+public health, and overall quality of life.
+""")
 
-df_years = pd.DataFrame({
-    "Year": [int(y) for y in tahun_cols],
-    "Air Quality Improvement": air_year.values,
-    "Noise Reduction": noise_year.values
-})
-
-fig_line = px.line(
-    df_years,
-    x="Year",
-    y=["Air Quality Improvement", "Noise Reduction"],
-    markers=True
-)
-
-st.plotly_chart(fig_line, use_container_width=True)
-
-st.info(
-    "📌 **Interpretation:** This graph shows that improvements in air quality and noise reduction have a consistent upward trend year after year, indicating a long-term environmental co-benefit."
-)
-
-# ======================
-# SCATTER COMFORT ZONE
-# ======================
-st.subheader("🎯 Comfort Zone Analysis")
-
-x_mean = df_years["Air Quality Improvement"].mean()
-y_mean = df_years["Noise Reduction"].mean()
-
-df_years["Comfort Zone"] = np.where(
-    (df_years["Air Quality Improvement"] > x_mean) &
-    (df_years["Noise Reduction"] < y_mean),
-    "Most Comfortable",
-    "Other"
-)
-
-fig_scatter = px.scatter(
-    df_years,
-    x="Air Quality Improvement",
-    y="Noise Reduction",
-    color="Comfort Zone",
-    hover_data=["Year"],
-)
-
-fig_scatter.add_vline(x=x_mean, line_dash="dash")
-fig_scatter.add_hline(y=y_mean, line_dash="dash")
-
-st.plotly_chart(fig_scatter, use_container_width=True)
-
-st.success(
-    "🎯 **Summary:** The area in the lower-right quadrant represents the most comfortable conditions for people—clean air with low noise levels."
-)
 
 # ======================
 # FOOTER
