@@ -215,7 +215,7 @@ st.info(
 # ======================
 # TOP 5 NOISE REDUCTION
 # ======================
-st.subheader("🔇 Top 5 Wilayah dengan Noise Reduction Terbaik")
+st.subheader("🔇 Top 5 Regions with the Best Noise Reduction")
 
 noise_top5 = (
     df[df['co-benefit_type'] == 'noise']
@@ -232,7 +232,7 @@ fig_noise_top5 = px.bar(
     x='small_area',
     y='Total Noise Reduction',
     text='Total Noise Reduction',
-    title="Top 5 Wilayah – Noise Reduction (2025–2050)",
+    title="Top 5 Regions – Noise Reduction (2025–2050)",
     color='Total Noise Reduction'
 )
 
@@ -242,9 +242,7 @@ fig_noise_top5.update_layout(yaxis_title="Total Noise Reduction")
 st.plotly_chart(fig_noise_top5, use_container_width=True)
 
 st.info(
-    "🔇 **Penjelasan:** Wilayah dengan tingkat pengurangan kebisingan tertinggi "
-    "menunjukkan keberhasilan pengelolaan transportasi, tata kota, dan pembatasan "
-    "aktivitas bising di area permukiman."
+    "🔇 **Summary:** Areas with the highest levels of noise reduction demonstrate successful transportation management, urban planning, and restrictions on noisy activities in residential areas."
 )
 
 # ======================
